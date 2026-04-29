@@ -42,7 +42,7 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.SERVER_DEPLOY_KEY }}
           ARGS: -avz --delete
-          SERVER_PORT: 22
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
           FOLDER: "./"  # folder which used to push. The path is relative to the root directory of the repository.
           SERVER_IP: ${{ secrets.SERVER_HOST }} # reference configuration, server host name (IP or domain name)
           USERNAME: ${{ secrets.SERVER_USERNAME }} # reference configuration, login username for server
