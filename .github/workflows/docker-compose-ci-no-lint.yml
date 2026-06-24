@@ -1,0 +1,20 @@
+name: CI (No Lint)
+
+on:
+  workflow_call
+
+jobs:
+  Check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@main
+
+      - name: Install docker compose
+        uses: KengoTODA/actions-setup-docker-compose@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check docker compose version
+        run: docker compose version

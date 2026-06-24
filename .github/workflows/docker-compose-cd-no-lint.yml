@@ -1,0 +1,53 @@
+name: CD (No Lint)
+
+on:
+  workflow_call:
+    secrets:
+      SERVER_HOST:
+        required: true
+      SERVER_PORT:
+        required: true
+      SERVER_USERNAME:
+        required: true
+      SERVER_DEPLOY_KEY:
+        required: true
+      SERVER_DESTINATION:
+        required: true
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v6
+
+      - name: Install docker compose
+        uses: KengoTODA/actions-setup-docker-compose@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check docker compose version
+        run: docker compose version
+
+      - name: Upload files to server
+        uses: AEnterprise/rsync-deploy@v1.0.2
+        env:
+          DEPLOY_KEY: ${{ secrets.SERVER_DEPLOY_KEY }}
+          ARGS: -avz --delete
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          FOLDER: "./"
+          SERVER_IP: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_DEPLOY_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd ${{ secrets.SERVER_DESTINATION }}
+            ./deploy.sh
