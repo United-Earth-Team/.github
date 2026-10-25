@@ -31,7 +31,7 @@ CONTAINER_NAME=$1
 DOCKER_COMPOSE_FILE=${RELATIVE_SHELL_DIR}/${2:-"compose.yaml"}
 
 # start docker
-MAX_CHECK_TIMES=10
+MAX_CHECK_TIMES=15
 
 echo "deploying $CONTAINER_NAME..."
 sudo docker compose -f $DOCKER_COMPOSE_FILE -p $CONTAINER_NAME down --rmi all
@@ -52,7 +52,7 @@ while  [ $check_times -lt $MAX_CHECK_TIMES ]; do
 
     fi
     ((check_times++))
-    sleep 2
+    sleep 10
 done
 echo "failed started compose $CONTAINER_NAME!"
 exit 1
